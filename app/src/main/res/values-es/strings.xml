@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inicio</string>
+    <string name="username_text">Usuario</string>
+    <string name="delete_title">Borrar</string>
+</resources>
