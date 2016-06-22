@@ -21,7 +21,7 @@ import idmexico.com.mx.clase1.util.PreferenceUtil;
  */
 public class ActivityDetail extends AppCompatActivity implements View.OnClickListener {
 
-    TextView txtTimer ;
+    TextView txtTimer, txtUltimaVez ;
     private PreferenceUtil PrefenciaUtil;
 
     private BroadcastReceiver broadcastReceiver= new BroadcastReceiver() {
@@ -30,7 +30,6 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
 
             int counter = intent.getExtras().getInt("timer");
             int i = PrefenciaUtil.getOnTime();
-
 
             txtTimer.setText(String.format("Session Length in seconds: %s", i !=0 ? i+counter:counter));
         }
@@ -45,8 +44,13 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.btnFragmentA).setOnClickListener(this);
         findViewById(R.id.btnFragmentB).setOnClickListener(this);
         txtTimer = (TextView) findViewById(R.id.txtTimer);
+        txtUltimaVez = (TextView) findViewById(R.id.txtUltimaVez);
 
         PrefenciaUtil = new PreferenceUtil(getApplicationContext());
+
+        String fecha = PrefenciaUtil.getLastSession();
+
+        txtUltimaVez.setText(String.format("Ultima Conexión : %s ",fecha));
 
     }
 
@@ -89,8 +93,11 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
 
         /**guardar el tiempo de uso en preferencias */
         PrefenciaUtil.SaveOnTime(Integer.parseInt(counter));
-
         Log.d(serviceTimer.TAG,"Destroy counter in : " + counter);
+
+        /**GUARDAR EL INICIO DE SESION */
+        PrefenciaUtil.saveLastSession();
+
     }
 
     private void changeFragmentB() {

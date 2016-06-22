@@ -3,9 +3,14 @@ package idmexico.com.mx.clase1.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import Model.ModelUSer;
+import idmexico.com.mx.clase1.Services.serviceTimer;
 
 /**
  * Created by Alumno on 17/06/2016.
@@ -49,10 +54,16 @@ public class PreferenceUtil {
         return sp.getInt("TimeSession",0);
     }
 
-    //public void saveLastSession(){
+    public void saveLastSession(){
+        Date date  = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String fechaHoy = sdf.format(date);
 
+        sp.edit().putString("UltimaVez",fechaHoy).apply();
+        Log.d(serviceTimer.TAG,"ultimo inicio de session: " + fechaHoy);
+    }
+    public String getLastSession(){
 
-        //sp.edit().putString().apply();
-    //}
-
+        return sp.getString("UltimaVez",null);
+    }
 }
