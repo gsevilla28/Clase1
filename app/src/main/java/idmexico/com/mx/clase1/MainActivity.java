@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,6 +17,7 @@ import javax.net.ssl.HandshakeCompletedEvent;
 
 import Model.ModelUSer;
 import idmexico.com.mx.clase1.Services.serviceTimer;
+import idmexico.com.mx.clase1.sql.ItemDataSource;
 import idmexico.com.mx.clase1.util.PreferenceUtil;
 
 import static android.view.View.GONE;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText user;
     private EditText pwd;
     private View loading;
+    private CheckBox check;
+
     private PreferenceUtil PrefenciaUtil;
 
     @Override
@@ -40,18 +44,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnRegiter_main).setOnClickListener(this);
         loading= findViewById(R.id.progress);
 
-
         PrefenciaUtil = new PreferenceUtil(getApplicationContext());
 
-        CheckBox check = (CheckBox) findViewById(R.id.cheRemeber);
-
-        check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(serviceTimer.TAG,"chequeo :" + isChecked);
-            }
-        });
-
+        check = (CheckBox) findViewById(R.id.cheRemeber);
 
     }
 
@@ -71,14 +66,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void launcheRegister() {
         startActivity(new Intent(getApplicationContext(),Register.class));
-
         /*otra forma de hacerlo*/
         //Intent intent = new Intent(getApplicationContext(),Register.class);
         //startActivity(intent);
-
     }
 
-    private void processData() {
+    private void processData() { //DoLogin
         String usuario = user.getText().toString();
         String pass = pwd.getText().toString();
         loading.setVisibility(View.VISIBLE);
@@ -89,15 +82,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 loading.setVisibility(View.GONE);
             }
         },1000*4);
-        ModelUSer ModeloUsuario = PrefenciaUtil.getUser();
-        if (ModeloUsuario != null) {
+
+        /*ModelUSer ModeloUsuario = PrefenciaUtil.getUser(); se guardaba en shared preferences*/
+        //obtener datos del usuario en BD local
+
+        ItemDataSource itemDataSource = new ItemDataSource(getApplicationContext());
+
+        ModelUSer ModeloUsuario = itemDataSource.ValidaUsuario(usuario,pass);
+
+
+
+        if (ModeloUsuario.Nombre !=null) {
 
             if (usuario.equals(ModeloUsuario.userName) && pass.equals(ModeloUsuario.password)) {
                 Toast.makeText(getApplicationContext(), "Login", Toast.LENGTH_SHORT).show();
+
+                //if (check.isChecked()){
+                    /*guardar id usuario en preferencias*/
+                //    PrefenciaUtil.saveIDuser(10);
+                //}
+
                 Intent intent= new Intent(getApplicationContext(),ActivityDetail.class);
                 intent.putExtra("key_user",usuario);
                 startActivity(intent);
 
+
+                /**iniciar servicio para contar tiempo*/
                 startService(new Intent(getApplicationContext(), serviceTimer.class));
 
             } else {
@@ -105,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else{
-            Toast.makeText(getApplicationContext(), "Falta Registro", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "el usuario no existe o las credenciales son incorrectas", Toast.LENGTH_SHORT).show();
         }
     }
 }

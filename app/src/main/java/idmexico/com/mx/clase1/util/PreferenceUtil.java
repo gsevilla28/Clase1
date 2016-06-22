@@ -19,12 +19,18 @@ public class PreferenceUtil {
     public PreferenceUtil(Context context) {
         sp = context.getSharedPreferences(File_Name,Context.MODE_PRIVATE);
     }
+
     /*metodo para guardar usuario y contraseña en shared preferences*/
     public void saveUser(ModelUSer mUser){
-        //validar que nosea nul
+        //validar que nosea null
         sp.edit().putString("user_name",mUser.userName).apply();
         sp.edit().putString("password",mUser.password).apply();
     }
+
+    public void saveIDuser(int id){
+        sp.edit().putInt("idusuario",id).apply();
+    }
+
     public ModelUSer getUser(){
         String mUser=sp.getString("user_name",null);
         String mPassword=sp.getString("password",null);
@@ -35,5 +41,18 @@ public class PreferenceUtil {
         return new ModelUSer(mUser,mPassword,"Default");
 
     }
+
+    public void SaveOnTime (int time){
+        sp.edit().putInt("TimeSession",time).apply();
+    }
+    public int getOnTime (){
+        return sp.getInt("TimeSession",0);
+    }
+
+    //public void saveLastSession(){
+
+
+        //sp.edit().putString().apply();
+    //}
 
 }

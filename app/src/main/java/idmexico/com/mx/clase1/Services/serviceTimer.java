@@ -26,7 +26,7 @@ public class serviceTimer extends Service {
             Intent intent = new Intent(ACTION_SEND_TIMER);  /*quien escuche este string puede obtener los datos*/
             intent.putExtra("timer",counter);
             sendBroadcast(new Intent(intent));
-            Log.d(TAG,"contador: " + counter);
+            //Log.d(TAG,"contador: " + counter);
         }
     };
 
@@ -48,9 +48,7 @@ public class serviceTimer extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG,"destroy");
         handler.removeCallbacks(runnable);
-
     }
 
     @Override

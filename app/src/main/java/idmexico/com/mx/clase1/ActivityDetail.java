@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import idmexico.com.mx.clase1.Services.serviceTimer;
+import idmexico.com.mx.clase1.util.PreferenceUtil;
 
 /**
  * Created by Alumno on 10/06/2016.
@@ -21,12 +22,17 @@ import idmexico.com.mx.clase1.Services.serviceTimer;
 public class ActivityDetail extends AppCompatActivity implements View.OnClickListener {
 
     TextView txtTimer ;
+    private PreferenceUtil PrefenciaUtil;
+
     private BroadcastReceiver broadcastReceiver= new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int counter = intent.getExtras().getInt("timer");
-            txtTimer.setText(String.format("Session Length %s seconds", counter));
 
+            int counter = intent.getExtras().getInt("timer");
+            int i = PrefenciaUtil.getOnTime();
+
+
+            txtTimer.setText(String.format("Session Length in seconds: %s", i !=0 ? i+counter:counter));
         }
     };
 
@@ -34,16 +40,13 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        //TextView txt = (TextView) findViewById(R.id.username_text);
-        //String data=getIntent().getExtras().getString("key_user");
-        //String usernamedetail=  String.format(getString(R.string.hello),data);
-
-        //txt.setText(usernamedetail);
 
         //getFragmentManager().beginTransaction().replace(R.id.FragmentoHolder,new FragmentProfile()).commit();
         findViewById(R.id.btnFragmentA).setOnClickListener(this);
         findViewById(R.id.btnFragmentB).setOnClickListener(this);
         txtTimer = (TextView) findViewById(R.id.txtTimer);
+
+        PrefenciaUtil = new PreferenceUtil(getApplicationContext());
 
     }
 
@@ -63,7 +66,7 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(serviceTimer.TAG,"REsume");
+        Log.d(serviceTimer.TAG,"Resume");
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(serviceTimer.ACTION_SEND_TIMER);
         registerReceiver(broadcastReceiver,intentFilter);
@@ -72,15 +75,22 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(serviceTimer.TAG,"PAuse");
+        Log.d(serviceTimer.TAG,"Pause");
         unregisterReceiver(broadcastReceiver);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(serviceTimer.TAG,"Destroy");
+
         stopService(new Intent(getApplicationContext(),serviceTimer.class));
+        String counter= txtTimer.getText().toString().substring(txtTimer.getText().toString().indexOf(":")+2,txtTimer.getText().toString().length());
+
+        /**guardar el tiempo de uso en preferencias */
+        PrefenciaUtil.SaveOnTime(Integer.parseInt(counter));
+
+        Log.d(serviceTimer.TAG,"Destroy counter in : " + counter);
     }
 
     private void changeFragmentB() {

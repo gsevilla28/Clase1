@@ -40,20 +40,25 @@ public class ItemDataSource {
     }
 
     /**METODO PARA INSERTAR USUARIOS EN BD LOCAL*/
-    public void SaveUser(ModelUSer user){
+    public Boolean SaveUser(ModelUSer user){
         cv.put(MySqliteHelper.COLUMN_USER,user.userName);
         cv.put(MySqliteHelper.COLUMN_PWD,user.password);
         cv.put(MySqliteHelper.COLUMN_USER_NAME,user.Nombre);
 
-        db.insert(MySqliteHelper.TABLE_NAME_USERS,null,cv);
-        cv.clear();
+        try {
+            db.insert(MySqliteHelper.TABLE_NAME_USERS, null, cv);
+            cv.clear();
+            return true;
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
 
 
     public void deleteItem (ModelItem modelItem){
 
-        int elimanados =db.delete(MySqliteHelper.TABLE_NAME,MySqliteHelper.COLUMN_ID + "=?",
-                new String[]{String.valueOf(modelItem.id)});
+        int elimanados =db.delete(MySqliteHelper.TABLE_NAME,MySqliteHelper.COLUMN_ID + "=?",new String[]{String.valueOf(modelItem.id)});
 
     }
 
@@ -96,6 +101,19 @@ public class ItemDataSource {
         else{
             return new ModelUSer("","","");
         }
+    }
+
+    public ModelUSer ValidaUsuario(String user,String pwd){
+
+        Cursor cur = db.query(MySqliteHelper.TABLE_NAME_USERS,null,MySqliteHelper.COLUMN_USER + "=? AND " + MySqliteHelper.COLUMN_PWD + "=?", new String[]{user,pwd},null,null,null,null );
+
+        if (cur.moveToNext()) {
+            return new ModelUSer(cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER)), cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_PWD)), cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER_NAME)));
+        }
+        else {
+            return new ModelUSer(null,null,null);
+        }
+
     }
 
 }

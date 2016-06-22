@@ -4,7 +4,8 @@
     android:layout_height="match_parent">
 
     <EditText
-
+        android:hint="Indique su nombre"
+        android:id="@+id/txtNombreUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
@@ -13,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
+        android:inputType="textPassword"
         android:id="@+id/mPassword_register"
         android:hint="password"
         android:layout_width="match_parent"
