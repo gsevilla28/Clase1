@@ -3,4 +3,9 @@
     <string name="username_text">User</string>
     <string name="hello" formated="false">hello %s welcome</string>
     <string name="delete_title">Delete</string>
+    <string name="msjErrorLogin">USUARIO O CONTRASEÑA INCORRECTA</string>
+    <string name="msjOKLogin">Acceso Correcto</string>
+    <string name="msjErrorRegistro">Usuario no registrado</string>
+    <string name="LastConnection" formated="false">Ultima Conexión : %s</string>
+
 </resources>

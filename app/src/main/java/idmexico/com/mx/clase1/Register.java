@@ -46,9 +46,10 @@ public class Register extends AppCompatActivity {
                         if (!TextUtils.isEmpty(mPass)) {
 
                             ItemDataSource dataSource = new ItemDataSource(getApplicationContext());
-                            if(dataSource.SaveUser(new ModelUSer(mUserName, mPass, mNombre))) {  /*insertar registro en B.D. Local*/
+                            if(dataSource.SaveUser(new ModelUSer(0,mUserName, mPass, mNombre))) {  /*insertar registro en B.D. Local*/
                                 Toast.makeText(getApplicationContext(), "Registro Exitoso!!", Toast.LENGTH_SHORT).show();
                                 ClearControls();
+                                finish(); /*terminar la actividad [cerrar form]*/
                             }
                             else{
                                 Toast.makeText(getApplicationContext(), "Intente mas tarde...", Toast.LENGTH_SHORT).show();

@@ -35,6 +35,12 @@ public class PreferenceUtil {
     public void saveIDuser(int id){
         sp.edit().putInt("idusuario",id).apply();
     }
+    public int getIdUser(){
+        return sp.getInt("idusuario",0);
+    }
+    public void DeleteIdUser(){
+        sp.edit().remove("idusuario").apply();
+    }
 
     public ModelUSer getUser(){
         String mUser=sp.getString("user_name",null);
@@ -43,8 +49,7 @@ public class PreferenceUtil {
         if (TextUtils.isEmpty(mUser) || TextUtils.isEmpty(mPassword)) {
             return null;
         }
-        return new ModelUSer(mUser,mPassword,"Default");
-
+        return new ModelUSer(0,mUser,mPassword,"Default");
     }
 
     public void SaveOnTime (int time){

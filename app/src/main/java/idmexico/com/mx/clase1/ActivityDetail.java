@@ -48,9 +48,9 @@ public class ActivityDetail extends AppCompatActivity implements View.OnClickLis
 
         PrefenciaUtil = new PreferenceUtil(getApplicationContext());
 
-        String fecha = PrefenciaUtil.getLastSession();
+        String fecha = PrefenciaUtil.getLastSession() == null ? "NUNCA" : PrefenciaUtil.getLastSession();
 
-        txtUltimaVez.setText(String.format("Ultima Conexión : %s ",fecha));
+        txtUltimaVez.setText(String.format(fecha, R.string.LastConnection));
 
     }
 

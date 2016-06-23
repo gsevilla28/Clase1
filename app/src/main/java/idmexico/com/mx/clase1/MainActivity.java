@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.net.ssl.HandshakeCompletedEvent;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText pwd;
     private View loading;
     private CheckBox check;
+    private int idusuario;
+    private TextView txtnombre;
 
     private PreferenceUtil PrefenciaUtil;
 
@@ -39,15 +42,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
          user= (EditText) findViewById(R.id.username);
          pwd = (EditText) findViewById(R.id.pwd);
+        txtnombre = (TextView) findViewById(R.id.txtviewNombre);
 
         findViewById(R.id.btnlogin).setOnClickListener(this);
         findViewById(R.id.btnRegiter_main).setOnClickListener(this);
         loading= findViewById(R.id.progress);
 
         PrefenciaUtil = new PreferenceUtil(getApplicationContext());
+        ItemDataSource itemDataSource =  new ItemDataSource(getApplicationContext());
 
         check = (CheckBox) findViewById(R.id.cheRemeber);
 
+        /*verificar si existe algun id guardado en shared preferences*/
+        idusuario = PrefenciaUtil.getIdUser();
+        if (idusuario>0){
+            ModelUSer datos =itemDataSource.getUser(idusuario);
+            txtnombre.setText(datos.Nombre);
+            user.setText(datos.userName);
+            pwd.setText(datos.password);
+            check.setChecked(true);
+        }
     }
 
 
@@ -91,31 +105,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ModelUSer ModeloUsuario = itemDataSource.ValidaUsuario(usuario,pass);
 
 
-
         if (ModeloUsuario.Nombre !=null) {
 
             if (usuario.equals(ModeloUsuario.userName) && pass.equals(ModeloUsuario.password)) {
-                Toast.makeText(getApplicationContext(), "Login", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.msjOKLogin, Toast.LENGTH_SHORT).show();
 
-                //if (check.isChecked()){
-                    /*guardar id usuario en preferencias*/
-                //    PrefenciaUtil.saveIDuser(10);
-                //}
+                if (check.isChecked()){ /*guardar id usuario en preferencias*/
+                    PrefenciaUtil.saveIDuser(ModeloUsuario.id_usuario);
+                } else{
+                    PrefenciaUtil.DeleteIdUser();
+                }
+
 
                 Intent intent= new Intent(getApplicationContext(),ActivityDetail.class);
                 intent.putExtra("key_user",usuario);
                 startActivity(intent);
 
-
                 /**iniciar servicio para contar tiempo*/
                 startService(new Intent(getApplicationContext(), serviceTimer.class));
+                //finish();
 
             } else {
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.msjErrorLogin, Toast.LENGTH_SHORT).show();
             }
         }
         else{
-            Toast.makeText(getApplicationContext(), "el usuario no existe o las credenciales son incorrectas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.msjErrorRegistro, Toast.LENGTH_SHORT).show();
         }
     }
 }

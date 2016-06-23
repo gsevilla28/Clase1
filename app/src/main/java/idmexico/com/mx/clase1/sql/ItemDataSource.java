@@ -62,8 +62,6 @@ public class ItemDataSource {
 
     }
 
-
-
     public List<ModelItem> getAllItems(){
 
         List<ModelItem> modelItemLis = new ArrayList<>();
@@ -91,15 +89,19 @@ public class ItemDataSource {
     /*obtener el usuario de acuerdo al id que se almacenó en shared preferences*/
     public ModelUSer getUser(int id){
 
-        //String[] args = new String[]{MySqliteHelper.COLUMN_ID_USER,MySqliteHelper.COLUMN_USER,MySqliteHelper.COLUMN_PWD,MySqliteHelper.COLUMN_USER_NAME};
-
-        Cursor cur = db.query(MySqliteHelper.TABLE_NAME_USERS,null,MySqliteHelper.COLUMN_ID_USER + " =?",null,null,null,null,null);
+        Cursor cur = db.query(MySqliteHelper.TABLE_NAME_USERS,null,MySqliteHelper.COLUMN_ID_USER + " =?",new String[]{String.valueOf(id)} ,null,null,null,null);
 
         if (cur.moveToNext()){
-            return new ModelUSer(cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER)),cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_PWD)),cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER_NAME)));
+
+            int idusuario=cur.getInt(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_ID_USER));
+            String usuario= cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER));
+            String password=cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_PWD));
+            String nombre=cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER_NAME));
+
+            return new ModelUSer(idusuario,usuario,password,nombre);
         }
         else{
-            return new ModelUSer("","","");
+            return new ModelUSer(0,"","","");
         }
     }
 
@@ -108,10 +110,15 @@ public class ItemDataSource {
         Cursor cur = db.query(MySqliteHelper.TABLE_NAME_USERS,null,MySqliteHelper.COLUMN_USER + "=? AND " + MySqliteHelper.COLUMN_PWD + "=?", new String[]{user,pwd},null,null,null,null );
 
         if (cur.moveToNext()) {
-            return new ModelUSer(cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER)), cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_PWD)), cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER_NAME)));
+            int idusuario=cur.getInt(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_ID_USER));
+            String usuario= cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER));
+            String password=cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_PWD));
+            String nombre=cur.getString(cur.getColumnIndexOrThrow(MySqliteHelper.COLUMN_USER_NAME));
+
+            return new ModelUSer(idusuario,usuario,password,nombre);
         }
         else {
-            return new ModelUSer(null,null,null);
+            return new ModelUSer(0,null,null,null);
         }
 
     }

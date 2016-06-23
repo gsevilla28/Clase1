@@ -6,12 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.provider.SyncStateContract;
 
+import idmexico.com.mx.clase1.R;
+
 /**
  * Created by Alumno on 17/06/2016.
  */
 public class MySqliteHelper  extends SQLiteOpenHelper{
 
-    private final static String DATABASE_NAME="unamsqlite3";
+    private final static String DATABASE_NAME= "unamsqlite3";
     private final static int DATABASE_VERSION=1;
 
     public static final String TABLE_NAME="item_table";
